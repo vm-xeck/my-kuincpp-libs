@@ -1,0 +1,14 @@
+; エラーメッセージを表示して停止
++func crash(msg: []char)
+    do @printErr("\{\color@red("Error")}: \{msg}\n")
+    do cui@flush()
+    assert false
+end func
+
+; stderrに出力
++func printErr(str: []char)
+    excode "  type_(Array_<char16_t>) msg_c16t = "
+    do str :: str
+    excode "  std::u16string msg_u16s = msg_c16t->B;\n"
+    excode "  std::cerr << utf16ToUtf8_(msg_u16s);\n"
+end func
