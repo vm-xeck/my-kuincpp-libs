@@ -7,8 +7,17 @@ end func
 
 ; stderrに出力
 +func printErr(str: []char)
-    excode "  type_(Array_<char16_t>) msg_c16t = "
+    if(str =& null)
+        excode "fputs(\"(null)\", stderr);\n"
+        excode "return;\n"
+    end if
+    excode "type_(Array_<char16_t>) str = "
     do str :: str
-    excode "  std::u16string msg_u16s = msg_c16t->B;\n"
-    excode "  std::cerr << utf16ToUtf8_(msg_u16s);\n"
+    excode "#if defined(_WIN32)\n"
+    excode "fputws(reinterpret_cast<const wchar_t*>(str->B), stderr);\n"
+    excode "#else\n"
+    excode "std::u16string s_ = str->B;\n"
+    excode "const std::string&t_=utf16ToUtf8_(s_);\n"
+    excode "fputs(t_.c_str(), stderr);\n"
+    excode "#endif\n"
 end func
